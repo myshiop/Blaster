@@ -59,6 +59,13 @@ void AWeapon::BeginPlay()
 	}
 }
 
+// Called every frame
+void AWeapon::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+}
+
 void AWeapon::OnSphereOverlap(UPrimitiveComponent* overlappedComponent, AActor* otherActor, UPrimitiveComponent* otherComp, int32 otherBodyIndex, bool bFromSweep, const FHitResult& sweepResult)
 {
 	ABlasterCharacter* blasterCharacter = Cast<ABlasterCharacter>(otherActor);
@@ -67,10 +74,10 @@ void AWeapon::OnSphereOverlap(UPrimitiveComponent* overlappedComponent, AActor* 
 	}
 }
 
-// Called every frame
-void AWeapon::Tick(float DeltaTime)
+void AWeapon::ShowPickupWidget(bool bShowWidget)
 {
-	Super::Tick(DeltaTime);
-
+	if (pickupWidget) {
+		pickupWidget->SetVisibility(bShowWidget);
+	}
 }
 
