@@ -8,6 +8,7 @@
 #include "Components/WidgetComponent.h"
 #include "Net/UnrealNetwork.h"
 #include "MultiPlayerShootGame/Weapon/Weapon.h"
+#include "MultiPlayerShootGame/BlasterComponent/CombatComponent.h"
 
 // Sets default values
 ABlasterCharacter::ABlasterCharacter()
@@ -36,6 +37,9 @@ ABlasterCharacter::ABlasterCharacter()
 
 	overheadWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("OverheadWidget"));
 	overheadWidget->SetupAttachment(RootComponent);
+
+	combat = CreateDefaultSubobject<UCombatComponent>(TEXT("CombatComponent"));	
+	combat->SetIsReplicated(true);
 }
 
 void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -43,6 +47,14 @@ void ABlasterCharacter::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& Ou
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(ABlasterCharacter, overlappingWeapon);
+}
+
+void ABlasterCharacter::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	if (combat) {
+		combat->character = this;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -63,6 +75,8 @@ void ABlasterCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCo
 	PlayerInputComponent->BindAxis("MoveRight", this, &ABlasterCharacter::MoveRight);
 	PlayerInputComponent->BindAxis("Turn", this, &ABlasterCharacter::Turn);
 	PlayerInputComponent->BindAxis("LookUp", this, &ABlasterCharacter::LookUp);
+	PlayerInputComponent->BindAction("Equip", IE_Pressed, this, &ABlasterCharacter::EquipButtonPressed);
+
 }
 
 void ABlasterCharacter::MoveForward(float value) 
@@ -96,6 +110,15 @@ void ABlasterCharacter::Turn(float value)
 void ABlasterCharacter::LookUp(float value) 
 {
 	AddControllerPitchInput(value);
+}
+
+void ABlasterCharacter::EquipButtonPressed()
+{
+	UE_LOG(LogTemp, Log, TEXT("Pressed Button!"));
+	if (combat && HasAuthority()) {
+
+		combat->EquipWeapon(overlappingWeapon);
+	}
 }
 
 

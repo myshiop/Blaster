@@ -22,6 +22,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	 // 重写获取生命周期复制属性的函数，用于网络同步
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PostInitializeComponents() override;
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,6 +32,7 @@ protected:
 	void MoveRight(float value);
 	void Turn(float value);
 	void LookUp(float value);
+	void EquipButtonPressed();
 
 private:
 	UPROPERTY(VisibleAnyWhere, Category = Camera)
@@ -44,6 +46,9 @@ private:
 
 	UPROPERTY(Replicated)
 	class AWeapon* overlappingWeapon;
+
+	UPROPERTY(VisibleAnywhere)
+	class UCombatComponent* combat;
 public:	
 	FORCEINLINE void SetOverlappingWeapon(AWeapon* weapon) {overlappingWeapon = weapon;}
 

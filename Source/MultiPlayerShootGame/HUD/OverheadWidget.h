@@ -27,5 +27,5 @@ public:
 	FString GetRemoteRole(APawn* inPawn);
 
 protected:
-	virtual void OnLevelRemovedFromWorld(ULevel* InLevel, UWorld* InWorld) override;
+	virtual void NativeDestruct() override;
 };
